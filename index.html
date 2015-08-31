@@ -72,20 +72,6 @@
                     var writer = new commonmark.HtmlRenderer();
                     var parsed = reader.parse(res); 
                     
-                    var walker = parsed.walker();
-                    var event, node;
-
-                    while ((event = walker.next())) {
-                        node = event.node;
-                        if (event.entering && node.type === 'CodeBlock') {
-                            if (node.info.indexOf("executable") >= 0) {
-                                var info = node.info.split(/\s+/);
-                                info[0] = info[0] + "-executable";
-                                node.info = info.join(" ");
-                            }
-                        }
-                    }
-                    
                     var rendered = writer.render(parsed);
                     
                     $('#content').empty().html(rendered);
@@ -99,21 +85,14 @@
         };
             
         function makeEditable() {
-            $('#content pre code[class^=language-purescript]').each(function() {
+    
+            $('#content pre code.language-purescript-editable').each(function() {
                 
                 // Get the additional code for this block and save it.
-                var prev = $(this).parent().prevAll('pre').children('code[class^=language-purescript]').map(function() {
+                var prev = $(this).parent().prevAll('pre').children('code.language-purescript').map(function() {
                     return $(this).text();
                 });
                 var additional = Array.prototype.join.call(Array.prototype.reverse.call(prev), "\n");
-                
-                $(this).data('additional', additional);
-            });
-        
-            $('#content pre code.language-purescript-executable').each(function() {
-                
-                // Get the additional code
-                var additional = $(this).data('additional');
                 
                 // Replace the pre element with a div
                 var code = $(this).text();
@@ -240,11 +219,25 @@
                 
                 <p>School of PureScript turns Markdown documents containing <a href="http://purescript.org">PureScript</a> code into executable, interactive web pages!</p>
                 
+                <h2>Instructions</h2>
+                
+                <ul>
+                    <li>Create a Markdown document containing your text and PureScript code.</li>
+                    <li>Code blocks with language type <code>purescript</code> will be displayed but not editable.</li>
+                    <li>
+                        Code blocks with language type <code>purescript-editable</code> will be editable by the user, and will
+                        be compiled including code from all previous <code>purescript</code> code blocks. Code inside <code>purescript-editable</code>
+                        blocks will not be recompiled in later <code>purescript-editable</code> blocks, so it is necessary to divide up code so that
+                        editable blocks compile using the right combination of previous code snippets.
+                    </li>
+                    <li>Link to <code>index.html?uri={your_markdown_document}</code>.</li>
+                </ul>
+                
                 <h2>Examples</h2>
                 
                 <ul>
                     <li>
-                        <a href="?uri=https://gist.githubusercontent.com/paf31/f0aa7cc2bf355fb80ac3/raw/6abad571a1aa9de513c74f0dc7fbfb7a8472bbd2/school.md">
+                        <a href="?uri=https://gist.githubusercontent.com/paf31/f0aa7cc2bf355fb80ac3/raw/">
                         Hello World Example
                         </a>
                     </li>
