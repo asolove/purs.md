@@ -116,7 +116,7 @@
                     makeEditable();
                 },
                 error: function() {
-                    console.error('Cannot load gist');
+                    $('#content').empty().append("Unable to load document.");
                 }
             });
         };
