@@ -88,7 +88,9 @@
             }
         });
         
-        function loadFromUri(uri) {    
+        // Load the Markdown content from the specified URL.
+        function loadFromUri(uri) { 
+               
             $.ajax({
                 url: uri,
                 method: 'GET',
@@ -99,6 +101,7 @@
                     var writer = new commonmark.HtmlRenderer();
                     var parsed = reader.parse(res); 
                     
+                    // Walk the AST, renaming purescript code blocks to hs for highlighting.
                     var walker = parsed.walker();
                     var event, node;
 
@@ -109,10 +112,12 @@
                         }
                     }
                     
+                    // Render and display the HTML
                     var rendered = writer.render(parsed);
                     
                     $('#content').empty().html(rendered);
                     
+                    // Add code editors.
                     makeEditable();
                 },
                 error: function() {
@@ -121,7 +126,14 @@
             });
         };
             
+        // Make editable code blocks editable using Ace.
         function makeEditable() {
+
+            // Remove hidden code blocks
+            $('#content pre code.language-purescript-hide').each(function(i, block) {
+                
+                $(block).parent().hide();
+            });
 
             // Highlight non-editable blocks using highlight.js
             $('#content pre code.language-hs').each(function(i, block) {
@@ -132,7 +144,7 @@
             $('#content pre code.language-purescript-editable').each(function() {
                 
                 // Get the additional code for this block and save it.
-                var prev = $(this).parent().prevAll('pre').children('code.language-hs').map(function() {
+                var prev = $(this).parent().prevAll('pre').children('code.language-hs, code.language-purescript-hide').map(function() {
                     return $(this).text();
                 });
                 var additional = Array.prototype.join.call(Array.prototype.reverse.call(prev), "\n");
@@ -273,6 +285,7 @@
                         blocks will not be recompiled in later <code>purescript-editable</code> blocks, so it is necessary to divide up code so that
                         editable blocks compile using the right combination of previous code snippets.
                     </li>
+                    <li>Code blocks with language type <code>purescript-hide</code> will be compiled but not displayed to the user.</li>
                     <li>Link to <code>index.html?uri={your_markdown_document}</code>.</li>
                 </ul>
                 
