@@ -66,7 +66,7 @@
                 // Replace the pre element with a div
                 var code = $(this).text();
                 var $example = $('<p>').addClass('example');
-                $(this).replaceWith($example);
+                $(this).parent().replaceWith($example);
                 
                 // Add a div which will act as the placeholder for the Ace editor
                 var $editor = $('<div>').appendTo($example);
