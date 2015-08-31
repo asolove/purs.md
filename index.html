@@ -26,14 +26,12 @@
             .example .console {
                 border-top: 1px dashed lightgray;
                 overflow: scroll;
-                min-height: 50px;
                 margin: 0;
             }
             
             .console iframe {
                 width: 100%;
                 border: 0;
-                height: 50px;
             }
         </style>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.4/jquery.js" type="text/javascript"></script>
@@ -116,6 +114,9 @@
                 var editor = ace.edit($code.get(0));
                 editor.setTheme('ace/theme/clouds');
                 editor.renderer.setShowGutter(false);
+                editor.setOptions({
+                    maxLines: 15
+                });
 
                 var session = editor.getSession();
 
