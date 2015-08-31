@@ -39,9 +39,31 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.0/ace.js" type="text/javascript"></script>
         <script src="assets/commonmark.min.js" type="text/javascript"></script>
         <script type="text/javascript">
+        (function($) {
+            $.QueryString = (function(a) {
+                if (a == "") return {};
+                var b = {};
+                for (var i = 0; i < a.length; ++i)
+                {
+                    var p=a[i].split('=');
+                    if (p.length != 2) continue;
+                    b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+                }
+                return b;
+            })(window.location.search.substr(1).split('&'))
+        })(jQuery);
+        
         $(function() {
+            var uri = $.QueryString["uri"];
+            
+            if (uri) {
+                loadFromUri(uri);
+            }
+        });
+        
+        function loadFromUri(uri) {    
             $.ajax({
-                url: 'https://gist.githubusercontent.com/paf31/f0aa7cc2bf355fb80ac3/raw/bab2313113513a0ccbc6949011b6d41f30766c59/school.md',
+                url: uri,
                 method: 'GET',
                 dataType: 'text',
                 crossDomain: true,
@@ -66,7 +88,7 @@
                     
                     var rendered = writer.render(parsed);
                     
-                    $('#content').html(rendered);
+                    $('#content').empty().html(rendered);
                     
                     makeEditable();
                 },
@@ -74,7 +96,7 @@
                     console.error('Cannot load gist');
                 }
             });
-        });
+        };
             
         function makeEditable() {
             $('#content pre code[class^=language-purescript]').each(function() {
@@ -208,12 +230,28 @@
         <div class="navbar navbar-default">
             <div class="container">
                 <div class="navbar-header">
-                    <a class="navbar-brand">School of PureScript</a>
+                    <a class="navbar-brand" href="index.html">School of PureScript</a>
                 </div>
             </div>
         </div>
         <div class="container">
-            <div id="content"></div>
+            <div id="content">
+                <h2>Welcome</h2>
+                
+                <p>School of PureScript turns Markdown documents containing <a href="http://purescript.org">PureScript</a> code into executable, interactive web pages!</p>
+                
+                <h2>Examples</h2>
+                
+                <ul>
+                    <li>
+                        <a href="?uri=https://gist.githubusercontent.com/paf31/f0aa7cc2bf355fb80ac3/raw/6abad571a1aa9de513c74f0dc7fbfb7a8472bbd2/school.md">
+                        Hello World Example
+                        </a>
+                    </li>
+                </ul>
+                
+                <p><small>&copy; <a href="http://functorial.com">Phil Freeman</a> 2015.</small></p>
+            </div>
         </div>
     </body>
 </html>
